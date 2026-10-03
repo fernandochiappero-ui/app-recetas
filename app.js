@@ -8,8 +8,7 @@
   const resultsCount = document.querySelector("#results-count");
   const searchMessage = document.querySelector("#search-message");
   const dialog = document.querySelector("#recipe-dialog");
-  const pdfName =
-    "https://github.com/fernandochiappero-ui/app-recetas/releases/latest/download/EBOOK.RESETEO.ABDOMINAL.pdf";
+  const pdfName = "EBOOK.RESETEO.ABDOMINAL.pdf";
   const suggestions = ["zanahoria", "zapallo", "espinaca", "tomate", "brócoli", "berenjena"];
   const normalize = (value) =>
     String(value || "")
