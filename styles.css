@@ -1571,6 +1571,32 @@ h1 {
   padding-top: 12px;
 }
 
+.pdf-page-frame {
+  display: flex;
+  width: 100%;
+  height: min(590px, 68vh);
+  min-height: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #f1f0e8;
+}
+
+.pdf-page-frame canvas {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.pdf-error {
+  margin: 10px 0 0;
+  color: #a22d24;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 .image-caption {
   display: flex;
   justify-content: space-between;
@@ -1581,12 +1607,8 @@ h1 {
   letter-spacing: 1.1px;
 }
 
-.recipe-image-panel iframe {
-  width: 100%;
-  height: min(590px, 68vh);
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  background: #f1f0e8;
+.mobile-pan-hint {
+  display: none;
 }
 
 .pdf-link {
@@ -1683,28 +1705,99 @@ h1 {
   }
 
   .recipe-dialog {
-    max-height: calc(100% - 20px);
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    border-radius: 0;
   }
 
   .dialog-content {
-    padding: 25px 20px 22px;
+    height: 100%;
+    padding: 0;
   }
 
   .dialog-recipe {
-    grid-template-columns: 1fr;
-    gap: 10px;
+    display: block;
+    height: 100%;
   }
 
   .dialog-copy {
-    padding: 15px 0 0;
+    display: none;
   }
 
   .recipe-image-panel {
-    padding-top: 10px;
+    position: relative;
+    height: 100%;
+    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
   }
 
-  .recipe-image-panel iframe {
-    height: 65vh;
+  .image-caption {
+    position: absolute;
+    z-index: 1;
+    top: calc(12px + env(safe-area-inset-top));
+    right: 60px;
+    left: 16px;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  .desktop-image-caption {
+    display: none;
+  }
+
+  .mobile-pan-hint {
+    display: inline;
+  }
+
+  .pdf-page-frame {
+    height: 100%;
+    min-height: 0;
+    align-items: flex-start;
+    justify-content: flex-start;
+    overflow: auto;
+    border: 0;
+    border-radius: 0;
+    background: #f1f0e8;
+  }
+
+  .pdf-page-frame canvas {
+    max-width: none;
+    max-height: none;
+    flex: 0 0 auto;
+  }
+
+  .close-dialog {
+    position: fixed;
+    top: calc(10px + env(safe-area-inset-top));
+    right: 12px;
+  }
+
+  .pdf-link {
+    display: none;
+  }
+
+  .recipe-image-panel.pdf-error-visible .pdf-link {
+    position: absolute;
+    right: 14px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    z-index: 1;
+    display: block;
+    margin: 0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--paper);
+  }
+
+  .recipe-image-panel .pdf-error:not([hidden]) {
+    position: absolute;
+    z-index: 1;
+    top: calc(38px + env(safe-area-inset-top));
+    right: 16px;
+    left: 16px;
+    margin: 0;
   }
 }
 
