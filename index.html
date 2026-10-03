@@ -10,8 +10,9 @@
     >
     <title>Raíz — Recetas para sentirte bien</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
     <script src="recipes.js" defer></script>
-    <script src="app.js?v=1" defer></script>
+    <script src="app.js?v=3" defer></script>
   </head>
   <body>
     <header class="site-header">
@@ -100,12 +101,15 @@
             </p>
           </div>
           <div class="recipe-image-panel">
-            <p class="image-caption">ASÍ SE VE EN TU RECETARIO <span id="dialog-page-label"></span></p>
-            <iframe
-              id="recipe-page"
-              title="Imagen de la receta en el ebook"
-              loading="lazy"
-            ></iframe>
+            <p class="image-caption">
+              <span class="desktop-image-caption">ASÍ SE VE EN TU RECETARIO</span>
+              <span class="mobile-pan-hint">Desliza para leer</span>
+              <span id="dialog-page-label"></span>
+            </p>
+            <div class="pdf-page-frame">
+              <canvas id="recipe-page" role="img" aria-label="Página del recetario"></canvas>
+            </div>
+            <p id="pdf-error" class="pdf-error" role="alert" hidden></p>
             <a id="open-pdf-page" class="pdf-link" target="_blank" rel="noopener">
               Abrir esta página del recetario ↗
             </a>

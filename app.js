@@ -8,7 +8,19 @@
   const resultsCount = document.querySelector("#results-count");
   const searchMessage = document.querySelector("#search-message");
   const dialog = document.querySelector("#recipe-dialog");
+  const recipePage = document.querySelector("#recipe-page");
+  const pdfError = document.querySelector("#pdf-error");
+  const recipeImagePanel = document.querySelector(".recipe-image-panel");
   const pdfName = "EBOOK.RESETEO.ABDOMINAL.pdf";
+  const pdfjs = window.pdfjsLib;
+  if (pdfjs) {
+    pdfjs.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  }
+  let pdfDocumentPromise;
+  let activePdfPage = null;
+  let activePdfRenderTask = null;
+  let renderSequence = 0;
   const suggestions = ["zanahoria", "zapallo", "espinaca", "tomate", "brócoli", "berenjena"];
   const normalize = (value) =>
     String(value || "")
@@ -143,6 +155,67 @@
     }
   }
 
+  async function renderPdfPage(pageNumber) {
+    if (activePdfRenderTask) {
+      activePdfRenderTask.cancel();
+      activePdfRenderTask = null;
+    }
+    const sequence = ++renderSequence;
+    pdfError.hidden = true;
+    recipeImagePanel.classList.remove("pdf-error-visible");
+    recipePage.removeAttribute("style");
+    recipePage.width = 1;
+    recipePage.height = 1;
+
+    if (!pdfjs) {
+      throw new Error("No se pudo cargar el visor PDF.");
+    }
+
+    pdfDocumentPromise ||= pdfjs.getDocument(pdfName).promise;
+    const pdfDocument = await pdfDocumentPromise;
+    const page = await pdfDocument.getPage(pageNumber);
+    if (sequence !== renderSequence || !dialog.open) return;
+
+    const frame = document.querySelector(".pdf-page-frame");
+    const baseViewport = page.getViewport({ scale: 1 });
+    const isMobile = window.matchMedia("(max-width: 760px)").matches;
+    const scale = isMobile
+      ? frame.clientHeight / baseViewport.height
+      : Math.min(
+          frame.clientWidth / baseViewport.width,
+          frame.clientHeight / baseViewport.height
+        );
+    const viewport = page.getViewport({ scale });
+    const outputScale = Math.min(window.devicePixelRatio || 1, 2);
+    recipePage.width = Math.ceil(viewport.width * outputScale);
+    recipePage.height = Math.ceil(viewport.height * outputScale);
+    recipePage.style.width = `${viewport.width}px`;
+    recipePage.style.height = `${viewport.height}px`;
+
+    const context = recipePage.getContext("2d");
+    if (!context) {
+      throw new Error("No se pudo preparar el visor del recetario.");
+    }
+
+    const renderTask = page.render({
+      canvasContext: context,
+      viewport,
+      transform: outputScale === 1 ? null : [outputScale, 0, 0, outputScale, 0, 0],
+    });
+    activePdfRenderTask = renderTask;
+    try {
+      await renderTask.promise;
+      if (sequence === renderSequence && isMobile) {
+        frame.scrollLeft = (frame.scrollWidth - frame.clientWidth) / 2;
+      }
+    } catch (error) {
+      if (sequence !== renderSequence) return;
+      throw error;
+    } finally {
+      if (activePdfRenderTask === renderTask) activePdfRenderTask = null;
+    }
+  }
+
   function openRecipe(recipe) {
     document.querySelector("#dialog-category").textContent = recipe.category || "Receta";
     document.querySelector("#dialog-title").textContent = recipe.title;
@@ -153,11 +226,20 @@
       "Consulta la página original para ver todos los ingredientes."
     );
 
-    const pageUrl = `${pdfName}#page=${recipe.page}&toolbar=0&navpanes=0&view=FitH`;
     document.querySelector("#dialog-page-label").textContent = `PÁGINA ${recipe.page}`;
-    document.querySelector("#recipe-page").src = pageUrl;
+    recipePage.setAttribute("aria-label", `Página ${recipe.page} del recetario`);
+    const pageUrl = `${pdfName}#page=${recipe.page}`;
     document.querySelector("#open-pdf-page").href = pageUrl;
+    activePdfPage = recipe.page;
     dialog.showModal();
+    renderPdfPage(recipe.page).catch((error) => {
+      console.error("No se pudo mostrar la página del recetario.", error);
+      if (!dialog.open) return;
+      pdfError.textContent =
+        "No se pudo cargar la página. Puedes abrirla directamente en el recetario.";
+      pdfError.hidden = false;
+      recipeImagePanel.classList.add("pdf-error-visible");
+    });
   }
 
   searchForm.addEventListener("submit", (event) => {
@@ -170,7 +252,26 @@
     if (event.target === dialog) dialog.close();
   });
   dialog.addEventListener("close", () => {
-    document.querySelector("#recipe-page").src = "about:blank";
+    renderSequence += 1;
+    activePdfPage = null;
+    if (activePdfRenderTask) {
+      activePdfRenderTask.cancel();
+      activePdfRenderTask = null;
+    }
+    recipePage.width = 1;
+    recipePage.height = 1;
+    recipePage.removeAttribute("style");
+  });
+  window.addEventListener("resize", () => {
+    if (!dialog.open || activePdfPage === null) return;
+    renderPdfPage(activePdfPage).catch((error) => {
+      console.error("No se pudo redimensionar la página del recetario.", error);
+      if (!dialog.open) return;
+      pdfError.textContent =
+        "No se pudo ajustar la página. Puedes abrirla directamente en el recetario.";
+      pdfError.hidden = false;
+      recipeImagePanel.classList.add("pdf-error-visible");
+    });
   });
 
   renderSuggestions();
