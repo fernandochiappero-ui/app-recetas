@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!doctype html>
 <html lang="es">
   <head>
@@ -119,3 +120,122 @@
     </dialog>
   </body>
 </html>
+=======
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f6f5ed">
+    <meta
+      name="description"
+      content="Busca recetas saludables del ebook Reseteo Abdominal por ingrediente y explora cada preparación."
+    >
+    <title>Raíz — Recetas para sentirte bien</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="recipes.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="Raíz, inicio">
+        <span class="brand-mark" aria-hidden="true">✳</span>
+        <span>raíz</span>
+      </a>
+      <span class="header-note">Comer rico también es cuidarte</span>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span aria-hidden="true">✦</span> TU RECETARIO, A TU MANERA</p>
+          <h1 id="hero-title">¿Qué tienes<br>ganas de cocinar?</h1>
+          <p class="hero-description">
+            Busca una verdura o ingrediente y encuentra recetas ricas para disfrutar todos los días.
+          </p>
+          <form class="search-form" role="search">
+            <label class="sr-only" for="ingredient-search">Buscar por verdura o ingrediente</label>
+            <span class="search-icon" aria-hidden="true">⌕</span>
+            <input
+              id="ingredient-search"
+              name="ingredient"
+              type="search"
+              placeholder="Prueba con zanahoria, zapallo..."
+              autocomplete="off"
+              aria-controls="recipe-results"
+            >
+            <button class="search-button" type="submit">Buscar</button>
+          </form>
+          <div class="popular-searches">
+            <span>Prueba:</span>
+            <div id="popular-ingredients" class="ingredient-chips" aria-label="Ingredientes populares"></div>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="hero-art-orbit orbit-one"></div>
+          <div class="hero-art-orbit orbit-two"></div>
+          <div class="hero-dish">
+            <span class="dish-leaf leaf-one">✿</span>
+            <span class="dish-leaf leaf-two">✿</span>
+            <span class="dish-leaf leaf-three">✿</span>
+            <span class="dish-tomato"></span>
+            <span class="dish-carrot">◢</span>
+            <span class="dish-sprout">♣</span>
+          </div>
+          <span class="art-caption caption-top">hecho con ingredientes reales</span>
+          <span class="art-caption caption-bottom">un plato a la vez <span>♡</span></span>
+        </div>
+      </section>
+
+      <section class="results-section" aria-labelledby="results-title">
+        <div class="results-heading">
+          <div>
+            <p class="eyebrow">INSPIRACIÓN PARA HOY</p>
+            <h2 id="results-title">Recetas para descubrir</h2>
+          </div>
+          <p id="results-count" class="results-count" aria-live="polite"></p>
+        </div>
+        <p id="search-message" class="search-message" role="status"></p>
+        <div id="recipe-results" class="recipe-grid"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span class="brand brand-footer"><span class="brand-mark" aria-hidden="true">✳</span> raíz</span>
+      <p>Recetas del ebook <em>Reseteo Abdominal</em></p>
+      <span class="footer-heart" aria-hidden="true">hecho con cariño&nbsp; ♥</span>
+    </footer>
+
+    <dialog id="recipe-dialog" class="recipe-dialog" aria-labelledby="dialog-title">
+      <div class="dialog-content">
+        <button id="close-dialog" class="close-dialog" type="button" aria-label="Cerrar receta">×</button>
+        <div class="dialog-recipe">
+          <div class="dialog-copy">
+            <p id="dialog-category" class="eyebrow"></p>
+            <h2 id="dialog-title"></h2>
+            <p id="dialog-meta" class="recipe-meta"></p>
+            <div class="recipe-detail-section">
+              <h3>Verduras encontradas en esta página</h3>
+              <ul id="dialog-vegetables"></ul>
+            </div>
+            <p class="recipe-note">
+              La página original muestra las recetas con sus cantidades, pasos e imágenes.
+            </p>
+          </div>
+          <div class="recipe-image-panel">
+            <p class="image-caption">ASÍ SE VE EN TU RECETARIO <span id="dialog-page-label"></span></p>
+            <iframe
+              id="recipe-page"
+              title="Imagen de la receta en el ebook"
+              loading="lazy"
+            ></iframe>
+            <a id="open-pdf-page" class="pdf-link" target="_blank" rel="noopener">
+              Abrir esta página del recetario ↗
+            </a>
+          </div>
+        </div>
+      </div>
+    </dialog>
+  </body>
+</html>
+>>>>>>> be7e59c (Publish recipe website)
